@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-const { Builder } = require('selenium-webdriver');
-const { expect } = require('expect');
+const {Builder} = require('selenium-webdriver');
+const {expect} = require('expect');
 const chrome = require('selenium-webdriver/chrome');
 
-describe('Selenium ChromeDriver', function () {
+describe('Selenium ChromeDriver', function() {
   let driver;
-  // The chrome and chromedriver installation can take some time. 
+  // The chrome and chromedriver installation can take some time.
   // Give 5 minutes to install everything.
   this.timeout(5 * 60 * 1000);
 
-  beforeEach(async function () {
+  beforeEach(async function() {
     const options = new chrome.Options();
     options.addArguments('--headless');
     options.addArguments('--no-sandbox');
@@ -35,30 +35,46 @@ describe('Selenium ChromeDriver', function () {
     options.setBrowserVersion('stable');
 
     const service = new chrome.ServiceBuilder()
-      .loggingTo('chromedriver.log')
-      .enableVerboseLogging();
+                        .loggingTo('chromedriver.log')
+                        .enableVerboseLogging();
 
     driver = await new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(options)
-      .setChromeService(service)
-      .build();
+                 .forBrowser('chrome')
+                 .setChromeOptions(options)
+                 .setChromeService(service)
+                 .build();
   });
 
-  afterEach(async function () {
-    await driver.quit();
-  });
+  afterEach(async function() { await driver.quit(); });
 
   /**
    * This test is intended to verify the setup is correct.
    */
-  it('should be able to navigate to google.com', async function () {
+  it('should be able to navigate to google.com', async function() {
     await driver.get('https://www.google.com');
     const title = await driver.getTitle();
     expect(title).toBe('Google');
   });
 
-  it('ISSUE REPRODUCTION', async function () {
-    // Add test reproducing the issue here.
-  });
+  it('[crbug 42323804] ChromeDriver no longer deleting cookie',
+     async function() {
+       const {By, until} = require('selenium-webdriver');
+
+       await driver.get('http://localhost:8080/reproduce_issue.html');
+
+       await driver.wait(async () => {
+         const c = await driver.manage().getCookie('SFA');
+         return !!c;
+       }, 5000, 'Cookie "SFA" did not appear');
+
+       let cookie = await driver.manage().getCookie('SFA');
+       expect(cookie).toBeDefined();
+       console.log('Cookie SFA found:', cookie);
+
+       await driver.manage().deleteCookie('SFA');
+
+       cookie = await driver.manage().getCookie('SFA');
+
+       expect(cookie).toBeNull();
+     });
 });

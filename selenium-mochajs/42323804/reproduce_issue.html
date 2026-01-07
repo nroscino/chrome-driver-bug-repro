@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reproduction</title>
+</head>
+<body>
+    <h1>Cookie Test</h1>
+    <script>
+        // Attempt to set a Partitioned cookie.
+        // Note: This requires Secure context (localhost is considered secure).
+        document.cookie = "SFA=testvalue; Secure; Path=/; SameSite=None; Partitioned";
+        console.log("Cookie set attempt made.");
+    </script>
+</body>
+</html>
