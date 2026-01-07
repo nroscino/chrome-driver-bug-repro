@@ -20,17 +20,22 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class RegressionTest {
-
+  String baseURL = "https://pegelonline.wsv.de/webservice/dokuRestapi";
   private WebDriver driver;
+  private WebDriver headfulDriver;
 
   @BeforeEach
   public void setUp() {
     ChromeOptions options = new ChromeOptions();
+    headfulDriver = new ChromeDriver(options);
+
     options.addArguments("--headless");
     options.addArguments("--no-sandbox");
 
@@ -64,7 +69,16 @@ public class RegressionTest {
   }
 
   @Test
+  // Reproducing crbug/42323674
   public void ISSUE_REPRODUCTION() {
-    // Add test reproducing the issue here.
+    String headless = printLinks(driver);
+    String headful = printLinks(headfulDriver);
+    assertEquals(headless, headful);
+  }
+
+  public String printLinks(WebDriver driver) {
+    driver.get(baseURL);
+    WebElement link = driver.findElement(By.xpath("/html/body/div/div[8]/table[5]/tbody/tr[2]/td[1]/a"));
+    return link.getAttribute("href");
   }
 }
