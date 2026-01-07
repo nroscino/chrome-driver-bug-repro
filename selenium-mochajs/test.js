@@ -60,5 +60,11 @@ describe('Selenium ChromeDriver', function () {
 
   it('ISSUE REPRODUCTION', async function () {
     // Add test reproducing the issue here.
+    await driver.get('https://www.google.com');
+    // Mimic the Python behavior: "window.localStorage.setItem('fp', 123);"
+    await driver.executeScript("window.localStorage.setItem('fp', 123);");
+    
+    const val = await driver.executeScript("return window.localStorage.getItem('fp');");
+    expect(val).toBe('123');
   });
 });

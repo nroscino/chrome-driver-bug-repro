@@ -54,5 +54,18 @@ def test_should_be_able_to_navigate_to_google_com(driver):
 
 @pytest.mark.timeout(TIMEOUT)
 def test_issue_reproduction(driver):
-    """Add test reproducing the issue here."""
-    pass
+    """Reproducing the local storage timeout issue.
+    The bug report suggests that calling execute_script to set an item in localStorage
+    causes a timeout in Chrome 107+.
+    """
+    driver.get("https://www.google.com")
+    # Using the EXACT logic from the bug report.
+    # driver.execute_script(f"window.localStorage.setItem('fp',{'123'});")
+    # In Python, f"{'123'}" evaluates to "123".
+    # So f"window.localStorage.setItem('fp',{'123'});" evaluates to 
+    # "window.localStorage.setItem('fp',123);"
+    driver.execute_script(f"window.localStorage.setItem('fp',{'123'});")
+    
+    # Verify the value is set correctly.
+    val = driver.execute_script("return window.localStorage.getItem('fp');")
+    assert val == "123"
