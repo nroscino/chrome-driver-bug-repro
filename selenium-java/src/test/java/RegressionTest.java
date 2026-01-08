@@ -34,15 +34,17 @@ public class RegressionTest {
   @BeforeEach
   public void setUp() {
     ChromeOptions options = new ChromeOptions();
+    options.addArguments("--no-sandbox");
+    options.addArguments("--disable-dev-shm-usage");
+
     headfulDriver = new ChromeDriver(options);
 
-    options.addArguments("--headless");
-    options.addArguments("--no-sandbox");
+    options.addArguments("--headless=new");
 
     // By default, the test uses the latest stable Chrome version.
     // Replace the "stable" with the specific browser version if needed,
     // e.g. 'canary', '115' or '144.0.7534.0' for example.
-    options.setBrowserVersion("stable");
+    options.setBrowserVersion("119");
 
     ChromeDriverService service =
         new ChromeDriverService.Builder()
