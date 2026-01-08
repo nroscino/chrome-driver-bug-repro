@@ -63,7 +63,7 @@ describe('Selenium ChromeDriver', function() {
     await driver.executeScript("window.localStorage.setItem('fp', 123);");
 
     const val =
-        await driver.executeScript("return window.localStorage.getItem('fp');");
+        await driver.executeScript("window.localStorage.getItem('fp');");
     expect(val).toBe('123');
   });
 });
