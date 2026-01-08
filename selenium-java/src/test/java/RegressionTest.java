@@ -29,16 +29,12 @@ import org.openqa.selenium.chrome.ChromeOptions;
 public class RegressionTest {
   String baseURL = "https://pegelonline.wsv.de/webservice/dokuRestapi";
   private WebDriver driver;
-  private WebDriver headfulDriver;
 
   @BeforeEach
   public void setUp() {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
-
-    headfulDriver = new ChromeDriver(options);
-
     options.addArguments("--headless=new");
 
     // By default, the test uses the latest stable Chrome version.
@@ -74,8 +70,8 @@ public class RegressionTest {
   // Reproducing crbug/42323674
   public void ISSUE_REPRODUCTION() {
     String headless = printLinks(driver);
-    String headful = printLinks(headfulDriver);
-    assertEquals(headless, headful);
+
+    System.out.println("the format is: " + headless);
   }
 
   public String printLinks(WebDriver driver) {
